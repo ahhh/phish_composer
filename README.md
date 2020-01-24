@@ -14,6 +14,6 @@ Execution example:
 sudo docker-compose up -d
 sudo docker ps
 # Attach to evilginx2
-sudo docker attach `docker ps | grep evilginx2 | cut -d ' ' -f1`
+sudo docker attach `sudo docker ps | grep evilginx2 | cut -d ' ' -f1`
 
 ```
