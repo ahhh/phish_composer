@@ -3,8 +3,17 @@ Phish-Composer is a docker-compose project inteded to spin up three docker image
 
   - [scottg88/gophish](https://hub.docker.com/r/scottg88/gophish/dockerfile/)
   - [warhorse/evilginx2](https://hub.docker.com/r/warhorse/evilginx2/dockerfile)
-  - [tecnativa/postfix-relay](https://hub.docker.com/r/tecnativa/postfix-relay/dockerfile)
+  - [mwader/postfix-relay](https://hub.docker.com/r/mwader/postfix-relay/dockerfile)
  
 
-Read more about this project here, which explains some more of the theory behind this deployment. Below are the key configuration files in this project:
+Read more about this project here, which explains some more of the theory behind this deployment as well as some key configuration files in the deployment.
 
+
+Execution example:
+```sh
+sudo docker-compose up -d
+sudo docker ps
+# Attach to evilginx2
+sudo docker attach `sudo docker ps | grep evilginx2 | cut -d ' ' -f1`
+
+```
