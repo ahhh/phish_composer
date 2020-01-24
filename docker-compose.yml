@@ -1,0 +1,60 @@
+version: '3'
+
+services:
+  gophish:
+    image: scottg88/gophish:latest
+    restart: always
+    ports:
+      - "3333:3333"
+      - "80:80"
+      #- "443:80"
+    volumes:
+      - ./gophish/gophish.db:/app/database/gophish.db
+      #- gophish/static/endpoint:/app/static/endpoint
+      #- gophish/config.json:/app/config.json
+      #- gophish/admin.crt:/app/admin.crt
+      #- gophish/admin.key:/app/admin.key
+      #- gophish/phish.crt:/app/phish.crt
+      #- gophish/phish.key:/app/phish.key
+
+  
+  # needs heavy configuration once launched
+  # attach to the app w/ "docker attach `docker ps | grep evilginx2 | cut -d ' ' -f1`"
+  evilginx2:
+    image: warhorse/evilginx2
+    ports:
+      - "443:443"
+      - 53:53/udp
+    depends_on:
+      - gophish
+    command: -debug #-developer
+    volumes:
+      - ./evilginx2/config.yaml:/root/.evilginx/config.yaml
+      #- ./evilginx2/crt/cert.pem:/root/.evilginx/crt/domain/custom.crt
+      #- ./evilginx2/crt/key.pem:/root/.evilginx/crt/domain/custom.key
+      #- ./evilginx2/phishlets/custom.yaml:/app/phishlets/custom.yaml
+    stdin_open: true
+    tty: true
+
+  # currently an open relay, might want to change this
+  smtp:
+    image: mwader/postfix-relay:latest
+    restart: always
+    environment:
+      - POSTFIX_myhostname=phish_composer_smtp_1
+      - OPENDKIM_DOMAINS=smtp.domain.tld
+      - MAIL_RELAY_HOST='smtp.gmail.com'
+      - MAIL_RELAY_PORT='587'
+      - MAIL_RELAY_USER='your_gmail_addr@gmail.com' 
+      - MAIL_RELAY_PASS='your_gmail_pass'
+    ports:
+      - "25:25"
+    volumes:
+      - ./postfix/header_checks:/etc/postfix/header_checks
+    depends_on:
+      -  evilginx2        
+    command: >
+      sh -c 'echo "header_checks = regexp:/etc/postfix/header_checks" >> /etc/postfix/main.cf &&
+             service postfix reload &&
+             /root/run'
+      
