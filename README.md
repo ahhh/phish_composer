@@ -6,7 +6,7 @@ Phish-Composer is a docker-compose project inteded to spin up three docker image
   - [mwader/postfix-relay](https://hub.docker.com/r/mwader/postfix-relay/dockerfile)
  
 
-Read more about this project here, which explains some more of the theory behind this deployment as well as some key configuration files in the deployment.
+[Read more about this project here](https://lockboxx.blogspot.com/2020/01/gophish-evilginx2-auto-deployment-w.html), which explains some more of the theory behind this deployment as well as some key configuration files in the deployment.
 
 
 Execution example:
